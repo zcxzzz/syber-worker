@@ -108,7 +108,7 @@ const [step, setStep] = useState(0);
 
   const startQuiz = () => {
     const shuffled = [...ALL_QUESTIONS].sort(() => 0.5 - Math.random());
-    setCurrentQuestions(shuffled.slice(0, 10));
+    setCurrentQuestions(shuffled.slice(0, 12));
     setSelectedAnswers({});
     setResult(null);
     setPosterImage(null);
@@ -265,24 +265,30 @@ const [step, setStep] = useState(0);
               {currentQuestions[step - 1].title}
             </h2>
             
-            <div className="space-y-4 pt-4">
+          <div className="space-y-4 pt-4">
               {currentQuestions[step - 1].options.map((option: any, index: number) => (
                 <button 
                   key={index} 
                   onClick={() => handleOptionClick(option.score)} 
-                  // 【UI终极美化】：全方位视觉升级，毛玻璃、磨砂、悬浮、左侧动态条、滑出箭头
-                  className="w-full text-left p-6 bg-white/40 backdrop-blur-sm border border-white/60 hover:bg-white/90 hover:border-black hover:shadow-2xl hover:scale-105 hover:rotate-1 rounded-2xl transition-all duration-300 active:scale-[0.98] group flex items-center justify-between"
+                  // 【修复重点】：
+                  // 1. 删除了答题卡自身的 backdrop-blur-sm (外层已经有毛玻璃了，嵌套模糊必糊)
+                  // 2. 删除了 hover:rotate-1 (旋转会破坏手机端字体的次像素渲染)
+                  // 3. 增加了 transform-gpu 和 antialiased (强制开启 3D 硬件加速，并锐化字体)
+                  className="w-full text-left p-5 sm:p-6 bg-white/60 border border-white/60 hover:bg-white/95 hover:border-black hover:shadow-xl sm:hover:scale-[1.02] rounded-xl sm:rounded-2xl transition-all duration-300 active:scale-[0.98] group flex items-center justify-between transform-gpu antialiased"
                 >
-                  <div className="flex items-center gap-4 flex-1 pr-4">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 pr-4">
                     {/* 动态左指示条 */}
-                    <div className="h-0.5 group-hover:h-12 w-1 bg-black rounded-full transition-all duration-500 ease-out"></div>
-                    <span className="text-gray-700 font-semibold group-hover:text-black transition-colors pr-2">
+                    <div className="h-1 sm:h-0.5 group-hover:h-10 sm:group-hover:h-12 w-1 bg-gray-400 group-hover:bg-black rounded-full transition-all duration-500 ease-out"></div>
+                    
+                    {/* 选项文本 */}
+                    <span className="text-sm sm:text-base text-gray-700 font-medium group-hover:text-black transition-colors pr-2">
                       {option.text}
                     </span>
                   </div>
+                  
                   {/* 滑出箭头 */}
-                  <div className="flex-none p-2 rounded-full transition-all duration-500 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0">
-                     <span className="text-2xl text-black font-mono">→</span>
+                  <div className="flex-none p-1 sm:p-2 rounded-full transition-all duration-500 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0">
+                     <span className="text-xl sm:text-2xl text-black font-mono leading-none">→</span>
                   </div>
                 </button>
               ))}

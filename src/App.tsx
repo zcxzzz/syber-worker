@@ -270,11 +270,12 @@ const [step, setStep] = useState(0);
                 <button 
                   key={index} 
                   onClick={() => handleOptionClick(option.score)} 
-                  // 【修复重点】：
-                  // 1. 删除了答题卡自身的 backdrop-blur-sm (外层已经有毛玻璃了，嵌套模糊必糊)
-                  // 2. 删除了 hover:rotate-1 (旋转会破坏手机端字体的次像素渲染)
-                  // 3. 增加了 transform-gpu 和 antialiased (强制开启 3D 硬件加速，并锐化字体)
-                  className="w-full text-left p-5 sm:p-6 bg-white/60 border border-white/60 hover:bg-white/95 hover:border-black hover:shadow-xl sm:hover:scale-[1.02] rounded-xl sm:rounded-2xl transition-all duration-300 active:scale-[0.98] group flex items-center justify-between transform-gpu antialiased"
+                  // 【iOS 终极修复版】：
+                  // 1. 彻底删除了 hover:scale 和 active:scale，杜绝苹果系统把文字转成位图模糊
+                  // 2. 改用 hover:-translate-y-1 做极其轻微的上浮，安全且有动感
+                  // 3. 点击反馈 (active) 改为背景色加深 (active:bg-gray-100) 和边框变色
+                  // 4. 移除了 transform-gpu，把字体渲染权交还给原生系统
+                  className="w-full text-left p-5 sm:p-6 bg-white/60 border border-white/60 hover:bg-white/95 hover:border-black hover:shadow-xl hover:-translate-y-1 active:bg-gray-100 active:border-gray-300 active:translate-y-0 rounded-xl sm:rounded-2xl transition-all duration-300 group flex items-center justify-between antialiased"
                 >
                   <div className="flex items-center gap-3 sm:gap-4 flex-1 pr-4">
                     {/* 动态左指示条 */}

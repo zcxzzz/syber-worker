@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import  { useState,useRef } from 'react';
 import { toPng } from 'html-to-image';
 
 // --- 1. 30道完整题库 (ALL_QUESTIONS) ---
@@ -21,7 +21,7 @@ const ALL_QUESTIONS = [
   { id: 16, title: "领导提需求：‘我要一种五彩斑斓的黑’，你：", options: [{ text: "报一个惊人加班费，说可以试试", score: { P: 1 } }, { text: "好的收到，过两天交一坨纯黑给他", score: { Z: 1 } }, { text: "表面答应，背地里把他做成表情包发摸鱼群", score: { S: 1 } }, { text: "直接整爆闪霓虹灯效果，问他够不够斑斓傻逼", score: { L: 1 } }] },
   { id: 17, title: "深夜11:31，领导突然私聊发来一句‘在吗？’，你：", options: [{ text: "秒回‘在的老板’，大脑开始计算加班费", score: { P: 1 } }, { text: "明天早上9点回‘不好意思昨晚睡死过去了’", score: { S: 1 } }, { text: "手机扔一边，在床上阴暗扭动两分钟想死", score: { M: 1 } }, { text: "回一个‘？’，看谁的心理素质先崩", score: { L: 1 } }] },
   { id: 18, title: "两句话就能说清的事，被拉去开了两小时会，你：", options: [{ text: "自带电脑，会上把其他活全干完", score: { F: 1 } }, { text: "练习睁着眼睛睡觉的神功", score: { Z: 1 } }, { text: "把每句废话都记在小本本上留作呈堂证供", score: { M: 1 } }, { text: "尿遁3次+屎遁2次，物理逃避", score: { L: 1 } }] },
-  { id: 19, title: "周末你在深山老林露营，信号都没有，老板让你紧急处理个报表，你：", options: [{ text: "发一张‘无信号’截图然后直接关机", score: { S: 1 } }, { text: "到处找信号处理完，周一申请调休", score: { P: 1 } }, { text: "回复‘好的’，然后假装发错了消息一直拖", score: { Z: 1 } }, { text: "找路人录段‘已被黑熊叼走’视频发过去", score: { L: 1 } }] },
+  { id: 19, title: "周末你在深山老林露营，信号都没有，老板让你紧急处理个报表，你：", options: [{ text: "已读不回,第二天再说", score: { S: 1 } }, { text: "到处找信号处理完，周一申请调休", score: { P: 1 } }, { text: "回复‘好的’，然后假装发错了消息一直拖", score: { Z: 1 } }, { text: "找路人录段‘已被黑熊叼走’视频发过去", score: { L: 1 } }] },
   { id: 20, title: "绩效面谈老板说‘给你升职，但目前没有预算涨薪’，你：", options: [{ text: "“只谈理想不谈钱是耍流氓，我不升”", score: { P: 1 } }, { text: "笑眯眯接受，立马把新title塞进简历找下家", score: { F: 1 } }, { text: "接受，然后用新职权把所有活用权限分出去", score: { Z: 1 } }, { text: "“谢谢老板，请问能把这个title刻在我的墓碑上吗”", score: { L: 1 } }] },
   { id: 21, title: "清晨7:00闹钟响起那一刻，你的第一想法是：", options: [{ text: "如果今天出门被电动车创飞，是不是就不用去上班了", score: { D: 1 } }, { text: "挺住，今天的出场费还有2小时到账", score: { P: 1 } }, { text: "盯着天花板灵魂出窍10分钟，怀疑人生", score: { Z: 1 } }, { text: "对着闹钟进行3分钟恶毒咒骂", score: { M: 1 } }] },
   { id: 22, title: "HR要求每天早上全员在工位前跳广播体操，你会：", options: [{ text: "动作像一只患关节炎的树懒，敷衍到底", score: { Z: 1 } }, { text: "跳跃运动时故意踩前面同事的脚", score: { M: 1 } }, { text: "用极致夸张的社会摇动作震撼全场", score: { L: 1 } }, { text: "躲在楼梯间刷手机，死无对证", score: { S: 1 } }] },
@@ -101,22 +101,21 @@ const [step, setStep] = useState(0);
   const [currentQuestions, setCurrentQuestions] = useState<any[]>([]);
   const [result, setResult] = useState<any>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, Record<string, number>>>({});
-
-// --- 【新增】：海报生成相关的状态和引用 ---
-  const posterRef = useRef<HTMLDivElement>(null); // 指向需要被截图的 DOM
-  const [posterImage, setPosterImage] = useState<string | null>(null); // 存放生成的 Base64 图片
-  const [isGenerating, setIsGenerating] = useState(false); // 生成中的 Loading 状态
+  
+  const posterRef = useRef<HTMLDivElement>(null); 
+  const [posterImage, setPosterImage] = useState<string | null>(null); 
+  const [isGenerating, setIsGenerating] = useState(false); 
 
   const startQuiz = () => {
     const shuffled = [...ALL_QUESTIONS].sort(() => 0.5 - Math.random());
-    setCurrentQuestions(shuffled.slice(0, 12));
+    setCurrentQuestions(shuffled.slice(0, 10));
     setSelectedAnswers({});
     setResult(null);
-    setPosterImage(null); // 开始新测试时清空旧海报
+    setPosterImage(null);
     setStep(1);
   };
-  // 选择答案
-const handleOptionClick = (scoreRecord: Record<string, number>) => {
+
+  const handleOptionClick = (scoreRecord: Record<string, number>) => {
     const newAnswers = { ...selectedAnswers, [step]: scoreRecord };
     setSelectedAnswers(newAnswers);
     if (step < currentQuestions.length) {
@@ -130,7 +129,8 @@ const handleOptionClick = (scoreRecord: Record<string, number>) => {
     if (step > 1) setStep(step - 1);
   };
 
-const calculateResult = (finalAnswers: Record<number, Record<string, number>>) => {
+  // --- 【优化重点】：修复 calculateResult 报错并接入 D 属性逻辑 ---
+  const calculateResult = (finalAnswers: Record<number, Record<string, number>>) => {
     const totalScores: Record<string, number> = { P:0, Z:0, M:0, L:0, S:0, F:0, D:0 };
     Object.values(finalAnswers).forEach(scoreRecord => {
       Object.keys(scoreRecord).forEach(key => {
@@ -147,19 +147,19 @@ const calculateResult = (finalAnswers: Record<number, Record<string, number>>) =
       }
     });
 
-    // 1. 获取对应的结果模板（不修改它）
     const resultTemplate = RESULTS[maxKey as keyof typeof RESULTS] || RESULTS.DEFAULT;
 
-    // 2. 根据 type 动态计算怨气指标
+    // --- 【修复重点】：根据 type 动态计算怨气指标，加入 D 属性 ---
     const getStats = (type: string) => {
+      // s1: 摸鱼熟练度, s2: 离职倒计时, s3: 老板 PTSD, s4: 反 PUA 抗性
       const statsMap: Record<string, {s1:number[], s2:number[], s3:number[], s4:number[]}> = {
-        P: { s1: [85, 99], s2: [40, 60], s3: [10, 30], s4: [90, 99] }, 
-        Z: { s1: [90, 99], s2: [80, 95], s3: [5, 20],  s4: [95, 99] }, 
-        M: { s1: [40, 60], s2: [10, 30], s3: [90, 99], s4: [70, 90] }, 
-        L: { s1: [20, 40], s2: [1, 10],  s3: [80, 99], s4: [99, 99] }, 
-        F: { s1: [60, 80], s2: [1, 5],   s3: [85, 99], s4: [50, 70] }, 
-        S: { s1: [70, 90], s2: [40, 60], s3: [60, 80], s4: [40, 60] }, 
-        D: { s1: [80, 95], s2: [10, 20], s3: [85, 99], s4: [99, 99] }, 
+        P: { s1: [85, 99], s2: [40, 60], s3: [10, 30], s4: [90, 99] }, // 巴菲特：只摸鱼搞钱，不理PUA
+        Z: { s1: [90, 99], s2: [80, 95], s3: [5, 20],  s4: [95, 99] }, // 僵尸：极其熟练，没有知觉
+        M: { s1: [40, 60], s2: [10, 30], s3: [90, 99], s4: [70, 90] }, // 暗杀：随时爆炸
+        L: { s1: [20, 40], s2: [1, 10],  s3: [80, 99], s4: [99, 99] }, // 整顿办：不摸鱼，直接干，马上走
+        F: { s1: [60, 80], s2: [1, 5],   s3: [85, 99], s4: [50, 70] }, // 提桶：离职倒计时仅剩 1-5%
+        S: { s1: [70, 90], s2: [40, 60], s3: [60, 80], s4: [40, 60] }, // 静音：中庸摸鱼
+        D: { s1: [80, 95], s2: [10, 20], s3: [85, 99], s4: [99, 99] }, // 【新增亡灵】：心如死灰，极致免疫 PUA
         DEFAULT: { s1: [50, 70], s2: [50, 70], s3: [50, 70], s4: [50, 70] }
       };
       
@@ -174,7 +174,7 @@ const calculateResult = (finalAnswers: Record<number, Record<string, number>>) =
       ];
     };
 
-    // 3. 【修复重点】：直接将模板和新计算的 stats 合并成一个新对象传给 setResult
+    // --- 【修复重点】：使用新对象解构，彻底解决 stats 类型报错 ---
     setResult({
       ...resultTemplate,
       stats: getStats(resultTemplate.type)
@@ -183,7 +183,7 @@ const calculateResult = (finalAnswers: Record<number, Record<string, number>>) =
     setStep(currentQuestions.length + 1);
   };
 
-const resetQuiz = () => {
+  const resetQuiz = () => {
     setStep(0);
     setCurrentQuestions([]);
     setSelectedAnswers({});
@@ -191,25 +191,17 @@ const resetQuiz = () => {
     setPosterImage(null);
   };
 
-  // --- 【新增】：生成海报的核心逻辑 ---
-const generatePoster = async () => {
+  // --- 生成海报逻辑 ---
+  const generatePoster = async () => {
     if (!posterRef.current) return;
     setIsGenerating(true);
-    
+    await new Promise(resolve => setTimeout(resolve, 150));
     try {
-      // 稍微延迟一下，确保 React 渲染完全就绪
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      // 使用 html-to-image 生成图片
       const dataUrl = await toPng(posterRef.current, {
-        pixelRatio: 2, // 提高两倍清晰度
-        backgroundColor: '#ffffff', // 强制白底
-        style: {
-          // 防止某些诡异的滚动条被截进去
-          overflow: 'hidden'
-        }
+        pixelRatio: 2, 
+        backgroundColor: '#ffffff',
+        style: { overflow: 'hidden' }
       });
-      
       setPosterImage(dataUrl);
     } catch (error) {
       console.error("生成海报失败:", error);
@@ -219,15 +211,11 @@ const generatePoster = async () => {
     }
   };
 
-// --- 【新增背景逻辑】：统一管理颜色氛围 ---
+  // --- 【新增背景逻辑】：加入 D 的幽灵色渐变 ---
   const getBackgroundClass = () => {
-    // 封面页：极简高级灰渐变
     if (step === 0) return "bg-gradient-to-br from-gray-100 to-gray-200"; 
-    
     // 【核心美化】：答题中（Question 1-10）：专属的冷灰蓝背景，让人冷静、专注
     if (step > 0 && step <= currentQuestions.length) return "bg-gradient-to-br from-slate-200 to-slate-300"; 
-    
-    // 结果页：根据不同人格渲染专属氛围色
     if (result) {
       switch(result.type) {
         case 'P': return "bg-gradient-to-br from-emerald-100 to-teal-200"; 
@@ -243,17 +231,16 @@ const generatePoster = async () => {
     return "bg-gray-50";
   };
 
-return (
-    // 【修改 1】：最外层容器接入动态背景函数，并添加 duration-1000 实现极其平滑的色彩渐变
+  return (
+    // 【修改核心】：最外层容器接入动态背景函数，并添加 duration-1000 平滑色彩渐变
     <div className={`min-h-screen flex items-center justify-center p-4 font-sans text-gray-800 transition-colors duration-1000 ease-in-out ${getBackgroundClass()}`}>
-      
-      {/* 【修改 2】：中间卡片改为半透明白 (bg-white/80) + 背景模糊 (backdrop-blur-xl)，形成高级的毛玻璃效果 */}
+      {/* 玻璃拟态卡片背景 */}
       <div className="w-full max-w-lg bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/50 p-8 relative overflow-hidden">
         
         {/* --- 步骤 0: 封面 --- */}
         {step === 0 && (
           <div className="text-center space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">2026 打工人职场属性状态诊断报告</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">2026 打工人职场属性诊断报告</h1>
             <p className="text-gray-500 font-medium">从 12 个致命场景中，测出你的“班味”浓度</p>
             <button onClick={startQuiz} className="mt-8 bg-black text-white px-8 py-3 rounded-md font-medium hover:bg-gray-800 hover:shadow-lg transition-all active:scale-95">
               开始诊断
@@ -261,7 +248,7 @@ return (
           </div>
         )}
 
-        {/* --- 步骤 1~10: 答题页 (全方位视觉升级) --- */}
+        {/* --- 步骤 1~10: 答题页 (高级毛玻璃悬浮卡片) --- */}
         {step > 0 && step <= currentQuestions.length && (
           <div className="space-y-6 animate-fade-in relative z-10">
              <div className="flex items-center justify-between text-sm text-gray-500 font-mono border-b border-gray-200/50 pb-4">
@@ -283,21 +270,17 @@ return (
                 <button 
                   key={index} 
                   onClick={() => handleOptionClick(option.score)} 
-                  // 【UI终极美化】：增加左指示条占位、增加悬浮时整体的 elevate 效果和旋转
+                  // 【UI终极美化】：全方位视觉升级，毛玻璃、磨砂、悬浮、左侧动态条、滑出箭头
                   className="w-full text-left p-6 bg-white/40 backdrop-blur-sm border border-white/60 hover:bg-white/90 hover:border-black hover:shadow-2xl hover:scale-105 hover:rotate-1 rounded-2xl transition-all duration-300 active:scale-[0.98] group flex items-center justify-between"
                 >
-                  {/* 选项文本和指示条 */}
                   <div className="flex items-center gap-4 flex-1 pr-4">
-                    {/* 【新增】：动态左侧装饰条 - 悬浮时高度长，其余时间高0.5 */}
+                    {/* 动态左指示条 */}
                     <div className="h-0.5 group-hover:h-12 w-1 bg-black rounded-full transition-all duration-500 ease-out"></div>
-                    
-                    {/* 文本：悬浮时更黑、更重 */}
                     <span className="text-gray-700 font-semibold group-hover:text-black transition-colors pr-2">
                       {option.text}
                     </span>
                   </div>
-                  
-                  {/* 【新增美化版】：箭头: 增加黑底白箭头，并且增加滑动和透明度动效 */}
+                  {/* 滑出箭头 */}
                   <div className="flex-none p-2 rounded-full transition-all duration-500 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0">
                      <span className="text-2xl text-black font-mono">→</span>
                   </div>
@@ -307,69 +290,75 @@ return (
           </div>
         )}
 
-        {/* --- 步骤 11: 结果页 --- */}
+        {/* --- 步骤 11: 结果页 (手机端优先优化) --- */}
         {step > currentQuestions.length && step !== 0 && result && (
-          <div className="space-y-8 animate-fade-in">
+          <div className="space-y-6 sm:space-y-8 animate-fade-in relative z-10">
             
-            <div ref={posterRef} className="bg-white p-6 -mx-6 sm:mx-0 rounded-lg relative">
+            {/* 被截图 DOM 区域 - 【手机优化重点：max-w-sm】 */}
+            <div ref={posterRef} className="bg-white p-5 sm:p-6 -mx-5 sm:mx-0 rounded-lg relative max-w-[340px] sm:max-w-lg mx-auto overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-2 bg-black"></div>
-              <div className="flex justify-between items-center text-xs text-gray-400 font-mono pt-3 pb-6 border-b border-gray-100 mb-8">
-                <span>SERIAL: SYBERWORKER-2026-{Math.random().toString(16).slice(2, 8).toUpperCase()}</span>
-                <span>TIME: {new Date().toLocaleString('zh-CN', { hour12: false })}</span>
+              
+              {/* SERIAL/TIME - 【手机优化重点：text-[10px]】 */}
+              <div className="flex justify-between items-center text-[10px] sm:text-xs text-gray-400 font-mono pt-3 pb-5 border-b border-gray-100 mb-6 sm:mb-8">
+                <span className="truncate">SERIAL: SYBERWORKER-2026-{Math.random().toString(16).slice(2, 8).toUpperCase()}</span>
+                <span>TIME: {new Date().toLocaleString('zh-CN', { hour12: false, minute: '2-digit', second: '2-digit' }).slice(-8)}</span>
               </div>
 
-              <div className="text-center space-y-4">
-                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">—— 2026 精神状态诊断结果 ——</p>
-                <div className="text-6xl pt-4 animate-bounce-short">{result.icon}</div>
-                <h1 className="text-2xl font-bold pt-2 text-black">
+              {/* 称号图标/标题 --- 【手机优化重点：text-5xl, text-xl】 */}
+              <div className="text-center space-y-3 sm:space-y-4">
+                <p className="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-widest">—— 打工人精神状态诊断 ——</p>
+                <div className="text-5xl sm:text-6xl pt-3 sm:pt-4 animate-bounce-short">{result.icon}</div>
+                <h1 className="text-xl sm:text-2xl font-bold pt-1 sm:pt-2 text-black leading-snug px-2">
                   {result.title}
                 </h1>
               </div>
               
-              <div className="bg-gray-50 mt-10 p-6 rounded-lg space-y-4 relative border border-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] rotate-12 text-6xl font-bold text-black pointer-events-none">
+              {/* 描述和引言 --- 【手机优化重点：text-sm】 */}
+              <div className="bg-gray-50 mt-8 sm:mt-10 p-5 sm:p-6 rounded-lg space-y-3 sm:space-y-4 relative border border-gray-100">
+                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] rotate-12 text-5xl sm:text-6xl font-bold text-black pointer-events-none">
                   CONFIDENTIAL
                 </div>
-                <p className="text-gray-700 leading-relaxed font-medium z-10 relative">
+                <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-medium z-10 relative">
                   {result.desc}
                 </p>
-                <blockquote className="border-t border-gray-200 pt-4 mt-4 italic text-gray-500 text-sm z-10 relative">
+                <blockquote className="border-t border-gray-200 pt-3 sm:pt-4 mt-3 sm:mt-4 italic text-gray-500 text-xs sm:text-sm z-10 relative">
                   "{result.quote}"
                 </blockquote>
               </div>
 
-              <div className="mt-10 pt-8 border-t border-gray-100 space-y-5">
-                <p className="text-sm font-bold text-gray-500 uppercase tracking-widest text-center">怨气指标分布</p>
+              {/* 怨气指标区 --- 【手机优化重点：text-xs】 */}
+              <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 space-y-4 sm:space-y-5">
+                <p className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-widest text-center">怨气指标分布</p>
                 
-                {/* 遍历渲染专属动态分数 */}
                 {result.stats && result.stats.map((item: any) => (
-                  <div key={item.label} className="flex items-center gap-4">
-                    <span className="text-xs text-gray-500 w-24 text-right font-medium">{item.label}</span>
+                  <div key={item.label} className="flex items-center gap-3 sm:gap-4">
+                    <span className="text-[10px] sm:text-xs text-gray-500 w-20 sm:w-24 text-right font-medium truncate">{item.label}</span>
                     <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden relative">
                       <div 
                         className="h-full bg-black rounded-full transition-all duration-1000 ease-out absolute left-0" 
                         style={{ width: `${item.value}%` }}
                       ></div>
                     </div>
-                    <span className="text-xs text-gray-800 font-bold font-mono w-10 text-right">{item.value}%</span>
+                    <span className="text-[10px] sm:text-xs text-gray-800 font-bold font-mono w-8 sm:w-10 text-right">{item.value}%</span>
                   </div>
                 ))}
-
               </div>
 
-              <div className="mt-12 pt-6 border-t border-dashed border-gray-200 flex justify-between items-end text-xs text-gray-400 font-mono">
+              {/* 底部 --- 【手机优化重点：text-[10px]】 */}
+              <div className="mt-10 sm:mt-12 pt-5 sm:pt-6 border-t border-dashed border-gray-200 flex justify-between items-end text-[10px] text-gray-400 font-mono">
                 <div className="space-y-1">
                   <span>@Silly Big Personality Test</span><br />
                   <span>该测试仅供娱乐,祝各位早日发财</span>
                 </div>
-                <div className="w-16 h-8 bg-gray-100 flex items-center justify-center border border-gray-200 rounded text-[6px] text-gray-300">
+                <div className="w-14 h-7 sm:w-16 sm:h-8 bg-gray-100 flex items-center justify-center border border-gray-200 rounded text-[6px] text-gray-300">
                   |||| || | |||| |
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3 pt-4">
-              <button onClick={generatePoster} disabled={isGenerating} className="w-full bg-black text-white px-8 py-3 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 flex justify-center items-center">
+            {/* 操作区 (不变) */}
+            <div className="space-y-3 pt-4 sm:pt-6">
+              <button onClick={generatePoster} disabled={isGenerating} className="w-full bg-black text-white px-8 py-3 rounded-md font-medium hover:bg-gray-800 hover:shadow-lg transition-colors disabled:bg-gray-400 flex justify-center items-center">
                 {isGenerating ? "生成中..." : "生成专属诊断书"}
               </button>
               <button onClick={resetQuiz} className="w-full border border-gray-300 text-gray-700 px-8 py-3 rounded-md font-medium hover:bg-white transition-colors">
@@ -381,17 +370,18 @@ return (
 
       </div>
       
-      {/* 预览弹窗 */}
+      {/* 预览弹窗 - 【手机优化重点：max-w-[280px]】 */}
       {posterImage && (
         <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center p-4 animate-fade-in" onClick={() => setPosterImage(null)}>
-          <div className="relative w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setPosterImage(null)} className="absolute -top-12 right-0 text-white p-2 hover:opacity-70">✕</button>
+          <div className="relative w-full max-w-[280px] sm:max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setPosterImage(null)} className="absolute -top-12 right-0 text-white p-2 hover:opacity-70">
+               ✕
+            </button>
             <img src={posterImage} alt="海报" className="w-full rounded-xl shadow-2xl mb-6" />
             <p className="text-white text-center font-medium animate-pulse">↑ 长按图片保存或分享给同事</p>
           </div>
         </div>
       )}
-
     </div>
   );
 

@@ -336,39 +336,56 @@ const [step, setStep] = useState(0);
 
         {/* --- 步骤 11: 结果页 (手机端优先优化) --- */}
         {step > currentQuestions.length && step !== 0 && result && (
-          <div className="space-y-6 sm:space-y-8 animate-fade-in relative z-10">
-            
-            {/* 被截图 DOM 区域 - 【手机优化重点：max-w-sm】 */}
-            <div ref={posterRef} className="bg-white p-5 sm:p-6 -mx-5 sm:mx-0 rounded-lg relative max-w-[340px] sm:max-w-lg mx-auto overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-2 bg-black"></div>
-              
-              {/* SERIAL/TIME - 【手机优化重点：text-[10px]】 */}
-              <div className="flex justify-between items-center text-[10px] sm:text-xs text-gray-400 font-mono pt-3 pb-5 border-b border-gray-100 mb-6 sm:mb-8">
-                <span className="truncate">SERIAL: SYBERWORKER-2026-{Math.random().toString(16).slice(2, 8).toUpperCase()}</span>
-                <span>TIME: {new Date().toLocaleString('zh-CN', { hour12: false, minute: '2-digit', second: '2-digit' }).slice(-8)}</span>
-              </div>
+  <div className="space-y-6 sm:space-y-8 animate-fade-in relative z-10">
+    
+    {/* 被截图 DOM 区域 */}
+    <div ref={posterRef} className="bg-white p-5 sm:p-8 -mx-5 sm:mx-0 rounded-lg relative max-w-[340px] sm:max-w-lg mx-auto overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-2 bg-black"></div>
+      
+      {/* SERIAL/TIME */}
+      <div className="flex justify-between items-center text-[10px] sm:text-xs text-gray-400 font-mono pt-3 pb-5 border-b border-gray-100 mb-6 sm:mb-8">
+        <span className="truncate">SERIAL: SYBERWORKER-2026-{Math.random().toString(16).slice(2, 8).toUpperCase()}</span>
+        <span>TIME: {new Date().toLocaleString('zh-CN', { hour12: false, minute: '2-digit', second: '2-digit' }).slice(-8)}</span>
+      </div>
 
-              {/* 称号图标/标题 --- 【手机优化重点：text-5xl, text-xl】 */}
-              <div className="text-center space-y-3 sm:space-y-4">
-                <p className="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-widest">—— 打工人精神状态诊断 ——</p>
-                <div className="text-5xl sm:text-6xl pt-3 sm:pt-4 animate-bounce-short">{result.icon}</div>
-                <h1 className="text-xl sm:text-2xl font-bold pt-1 sm:pt-2 text-black leading-snug px-2">
-                  {result.title}
-                </h1>
-              </div>
-              
-              {/* 描述和引言 --- 【手机优化重点：text-sm】 */}
-              <div className="bg-gray-50 mt-8 sm:mt-10 p-5 sm:p-6 rounded-lg space-y-3 sm:space-y-4 relative border border-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] rotate-12 text-5xl sm:text-6xl font-bold text-black pointer-events-none">
-                  CONFIDENTIAL
-                </div>
-                <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-medium z-10 relative">
-                  {result.desc}
-                </p>
-                <blockquote className="border-t border-gray-200 pt-3 sm:pt-4 mt-3 sm:mt-4 italic text-gray-500 text-xs sm:text-sm z-10 relative">
-                  "{result.quote}"
-                </blockquote>
-              </div>
+      {/* 图片与标题展示区 */}
+      <div className="text-center space-y-5 sm:space-y-6">
+        <p className="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-widest">—— 打工人精神状态诊断报告 ——</p>
+        
+        {/* 【尺寸升级】：
+           1. 手机端 w-48 (192px)，桌面端 sm:w-64 (256px)。
+           2. 维持 rounded-full 或改为 rounded-3xl (大圆角矩形) 也很符合盲盒包装感。
+           3. 增加了 ring 装饰边框，增加高级感。
+        */}
+        <div className="relative inline-block">
+          <img 
+            src={`results/${result.type}.webp`}
+            alt={result.title}
+            className="w-48 h-48 sm:w-64 sm:h-64 mx-auto rounded-3xl object-cover shadow-2xl ring-8 ring-gray-50 animate-bounce-short"
+          />
+          {/* 可选：在图片右下角加一个微小的性格水印标识 */}
+          {/* <div className="absolute -bottom-2 -right-2 bg-black text-white text-[10px] px-2 py-1 rounded font-mono shadow-lg">
+            TYPE: {result.type}
+          </div> */}
+        </div>
+
+        <h1 className="text-2xl sm:text-3xl font-black pt-4 text-black leading-tight px-2 tracking-tight">
+          {result.title}
+        </h1>
+      </div>
+      
+      {/* 描述区域 (增加了 mt-8 留出呼吸感) */}
+      <div className="bg-gray-50 mt-10 p-5 sm:p-6 rounded-2xl space-y-4 relative border border-gray-100">
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] rotate-12 text-6xl sm:text-7xl font-bold text-black pointer-events-none">
+          TOP SECRET
+        </div>
+        <p className="text-sm sm:text-lg text-gray-800 leading-relaxed font-bold z-10 relative">
+          {result.desc}
+        </p>
+        <blockquote className="border-t border-gray-200 pt-4 mt-4 italic text-gray-500 text-xs sm:text-sm z-10 relative">
+          "{result.quote}"
+        </blockquote>
+      </div>
 
               {/* 怨气指标区 --- 【手机优化重点：text-xs】 */}
               <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 space-y-4 sm:space-y-5">
